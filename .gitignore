@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.env.local
+.env.development.local
+
+telegram-trading-bot/node_modules/
+telegram-trading-bot/.env
+Aptos/.aptos
+ETH/node_modules/
+Aptos/.env
+ETH/.env

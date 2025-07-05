@@ -1,0 +1,33 @@
+[
+  [
+    6400838707,
+    {
+      "id": 6400838707,
+      "username": "code_x_0311",
+      "wallets": {},
+      "alerts": [
+        {
+          "token": "ETH",
+          "priceTarget": "2500",
+          "condition": "ETH >= $2500",
+          "active": false,
+          "created": "2025-07-05T18:37:50.729Z"
+        },
+        {
+          "token": "ETH",
+          "priceTarget": "Unknown",
+          "condition": "ETH >= $Unknown",
+          "active": true,
+          "created": "2025-07-05T20:12:05.328Z"
+        },
+        {
+          "token": "ETH",
+          "priceTarget": "Unknown",
+          "condition": "ETH >= $Unknown",
+          "active": true,
+          "created": "2025-07-05T20:12:21.708Z"
+        }
+      ]
+    }
+  ]
+]
