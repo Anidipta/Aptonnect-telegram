@@ -1,13 +1,140 @@
-# Sample Hardhat Project
+# Aptonnect - AI-Powered Telegram Crypto Assistant
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+**Aptonnect** is an advanced Telegram bot that enables seamless crypto portfolio tracking, price alerts, and token swaps across **Ethereum** and **Aptos**—all with natural language commands powered by **Gen AI RAG Agent**.
 
-Try running some of the following tasks:
+> 🔐 Encrypted wallet integration | 🧠 AI-powered command parsing | 🔄 Cross-chain token swap | 📈 Real-time portfolio insights | 🚨 Price alerts
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.js
+---
+
+## 🚀 Features
+
+### 🔐 Secure Wallet Integration
+- Connect wallets using **private keys** (Ethereum & Aptos).
+- Handles various formats including:
+  - `0x...` hex
+  - `ed25519-priv-...` for Aptos
+- Locally encrypted storage of user keys (`users_data.json`).
+- Cancel option during setup for added security.
+
+### 🧠 AI-Powered Command Parsing (RAG AGENTIC Gemini )
+- Parse natural language instructions like:
+  - `Swap 0.1 ETH to USDT`
+  - `What’s my Aptos balance?`
+  - `Alert me when BTC hits 50K`
+
+
+### 📊 Portfolio Tracking
+
+* View real-time wallet balances in **USD**.
+* Fetches token prices.
+* Displays:
+
+  * Token name & balance
+  * USD price
+  * 24h % change
+  * Total portfolio value
+
+### 🔄 Token Swaps (ETH ↔ APT) ( In progress..)
+
+* AI-triggered or manual swaps.
+* Verifies both wallets before executing.
+* Returns:
+
+  * Amount received
+  * Gas used
+  * TX hash
+  * Explorer link
+
+### 🚨 Price Alerts
+
+* Set alerts using natural language:
+
+  * `Alert when BTC > 50000`
+  * `Notify me if APT < 7`
+* Alert status saved and checked every hour.
+* Auto-triggers notifications in Telegram.
+
+### 📡 RESTful API (Node.js Express)
+
+* `/api/users`: Connected users, balances, keys.
+* `/api/alerts`: All current price alerts.
+
+---
+
+## 🧱 Architecture
+
+
+---
+
+## 💡 What’s New (vs Ziptos)
+
+| Feature                       | Ziptos ❌ | Aptonnect ✅ |
+| ----------------------------- | -------- | ----------- |
+| Gemini AI Command Parsing     | ❌        | ✅           |
+| Ethereum Wallet Support       | Partial  | ✅           |
+| Aptos Wallet Support          | ❌        | ✅           |
+| Encrypted Key Storage         | ❌        | ✅           |
+| Cancel Key Setup Flow         | ❌        | ✅           |
+| Real-Time Portfolio Tracking  | ❌        | ✅           |
+| Cross-Chain Token Swap        | ❌        | ✅           |
+| Price Alerts & Notifications  | ❌        | ✅           |
+| Express REST API              | ❌        | ✅           |
+| TX Receipts with Explorer URL | ❌        | ✅           |
+
+---
+
+## ⚙️ Installation
+
+```bash
+git clone https://github.com/Anidipta/Aptonnect-telegram.git
+cd Aptonnect-telegram
+npm install
 ```
+
+### Add `.env` file:
+
+```env
+BOT_TOKEN=your_telegram_bot_token
+GEMINI_API_KEY=your_gemini_api_key
+ETH_RPC_URL=https://your.eth.rpc
+APTOS_NODE_URL=https://fullnode.devnet.aptoslabs.com/v1
+```
+
+---
+
+## ▶️ Running the Bot
+
+```bash
+npm start
+```
+
+Or in development mode:
+
+```bash
+nodemon telegram-bot.js
+```
+
+---
+
+## 🛡️ Security Notes
+
+* **Private keys are encrypted locally** using AES.
+* No keys are sent to Gemini or 3rd parties.
+* Data is saved in `users_data.json`.
+
+---
+
+## 📌 Future Roadmap
+
+* 🔁 More chains: Solana, Polygon
+* 📊 Token trend charting
+* 🔐 Telegram PIN before sensitive actions
+* 🌉 Cross-chain bridge integration (Wormhole, LayerZero)
+
+---
+
+## 👨‍💻 Author
+
+**Anidipta Pal**
+Email: [anidiptapal@gmail.com](mailto:anidiptapal@gmail.com)
+GitHub: [github.com/Anidipta](https://github.com/Anidipta)
