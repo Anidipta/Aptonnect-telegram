@@ -10,3 +10,4 @@ Aptos/.aptos
 ETH/node_modules/
 Aptos/.env
 ETH/.env
+users_data.json

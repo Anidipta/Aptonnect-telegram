@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet Connection - Trading Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .wallet-button {
+            width: 100%;
+            padding: 16px 24px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: white;
+        }
+
+        .metamask-btn {
+            background: linear-gradient(45deg, #f6851b, #e2761b);
+            box-shadow: 0 8px 20px rgba(246, 133, 27, 0.3);
+        }
+
+        .metamask-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(246, 133, 27, 0.4);
+        }
+
+        .petra-btn {
+            background: linear-gradient(45deg, #6366f1, #4f46e5);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .petra-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 500;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .status.hidden {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .status.loading {
+            background: linear-gradient(45deg, #3182ce, #2c5282);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .status.success {
+            background: linear-gradient(45deg, #38a169, #2f855a);
+            color: white;
+        }
+
+        .status.error {
+            background: linear-gradient(45deg, #e53e3e, #c53030);
+            color: white;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #718096, #4a5568);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(113, 128, 150, 0.3);
+        }
+
+        .address-display {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            color: #2d3748;
+        }
+
+        .connecting-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .connecting-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .connecting-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 300px;
+            width: 90%;
+        }
+
+        .connecting-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .wallet-button {
+                padding: 14px 20px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🚀</div>
+        <h1>Connect Wallet</h1>
+        <p class="subtitle">Secure wallet connection for trading</p>
+        
+        <div id="wallet-selection">
+            <button class="wallet-button metamask-btn" onclick="connectWallet('metamask')">
+                🦊 Connect MetaMask
+            </button>
+            
+            <button class="wallet-button petra-btn" onclick="connectWallet('petra')">
+                🅿️ Connect Petra Wallet
+            </button>
+        </div>
+        
+        <div id="status" class="status hidden"></div>
+        
+        <button class="back-btn" onclick="goBack()">← Back to Telegram</button>
+    </div>
+
+    <!-- Connecting Overlay -->
+    <div id="connecting-overlay" class="connecting-overlay">
+        <div class="connecting-content">
+            <div class="connecting-spinner"></div>
+            <h3 id="connecting-title">Connecting to Wallet...</h3>
+            <p id="connecting-message">Please confirm the connection in your wallet</p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const BOT_SERVER_URL = 'http://localhost:3000';
+        let isConnecting = false;
+        
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId');
+        const walletType = urlParams.get('type');
+        
+        console.log('Page loaded with params:', { userId, walletType });
+        
+        // Auto-connect if type is specified
+        if (walletType && userId) {
+            setTimeout(() => {
+                if (walletType === 'eth') {
+                    connectWallet('metamask');
+                } else if (walletType === 'apt') {
+                    connectWallet('petra');
+                }
+            }, 1000);
+        }
+
+        // Show connecting overlay
+        function showConnectingOverlay(title, message) {
+            const overlay = document.getElementById('connecting-overlay');
+            const titleEl = document.getElementById('connecting-title');
+            const messageEl = document.getElementById('connecting-message');
+            
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+            overlay.classList.add('show');
+        }
+
+        // Hide connecting overlay
+        function hideConnectingOverlay() {
+            const overlay = document.getElementById('connecting-overlay');
+            overlay.classList.remove('show');
+        }
+
+        // Main wallet connection function
+        async function connectWallet(walletType) {
+            if (isConnecting) return;
+            
+            if (!userId) {
+                showError('Invalid connection link. Please use the link from Telegram.');
+                return;
+            }
+
+            isConnecting = true;
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status loading';
+            
+            try {
+                if (walletType === 'metamask') {
+                    await connectMetaMask();
+                } else if (walletType === 'petra') {
+                    await connectPetra();
+                }
+            } catch (error) {
+                hideConnectingOverlay();
+                showError('Connection failed: ' + error.message);
+                console.error('Connection error:', error);
+            } finally {
+                isConnecting = false;
+            }
+        }
+
+        // Enhanced MetaMask connection with private key extraction
+        async function connectMetaMask() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = '<div class="spinner"></div>Checking MetaMask...';
+            
+            try {
+                // Check if MetaMask is installed
+                if (typeof window.ethereum === 'undefined') {
+                    throw new Error('MetaMask not detected. Please install MetaMask extension.');
+                }
+
+                showConnectingOverlay('Connecting to MetaMask', 'Please approve the connection request in MetaMask');
+                
+                // Request account access
+                const accounts = await window.ethereum.request({ 
+                    method: 'eth_requestAccounts' 
+                });
+                
+                if (accounts.length === 0) {
+                    throw new Error('No accounts found. Please unlock MetaMask.');
+                }
+
+                const account = accounts[0];
+                console.log('MetaMask connected:', account);
+                
+                // Update status
+                statusDiv.innerHTML = '<div class="spinner"></div>Securing connection...';
+                
+                // Get network information
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                console.log('Connected to chain:', chainId);
+                
+                // For demonstration purposes - In production, NEVER request private keys
+                // This is just for the demo as requested
+                let privateKey = null;
+                try {
+                    // Note: This method doesn't actually work with MetaMask for security reasons
+                    // Private keys should never be extracted from MetaMask
+                    // This is included only because it was specifically requested
+                    console.log('Note: Private key extraction not possible with MetaMask for security reasons');
+                } catch (pkError) {
+                    console.log('Private key extraction failed (as expected):', pkError.message);
+                }
+
+                hideConnectingOverlay();
+                
+                // Send connection data to bot
+                const response = await fetch(`${BOT_SERVER_URL}/api/connect/confirm`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        walletType: 'metamask',
+                        address: account,
+                        chainId: chainId,
+                        privateKey: privateKey, // Will be null for MetaMask (security)
+                        connected: true,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(
+                        `✅ MetaMask Connected!<br>` +
+                        `<div class="address-display">${account}</div>` +
+                        `Network: ${getNetworkName(chainId)}<br>` +
+                        `Redirecting to Telegram...`
+                    );
+                    
+                    // Auto-close after 3 seconds
+                    setTimeout(() => {
+                        window.close() || goBack();
+                    }, 3000);
+                } else {
+                    throw new Error(result.error || 'Connection failed');
+                }
+                
+            } catch (error) {
+                hideConnectingOverlay();
+                console.error('MetaMask connection error:', error);
+                throw error;
+            }
+        }
+
+        // Enhanced Petra connection with private key extraction
+        async function connectPetra() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = '<div class="spinner"></div>Checking Petra Wallet...';
+            
+            try {
+                // Check if Petra is installed
+                if (typeof window.aptos === 'undefined') {
+                    throw new Error('Petra Wallet not detected. Please install Petra Wallet extension.');
+                }
+
+                showConnectingOverlay('Connecting to Petra', 'Please approve the connection request in Petra Wallet');
+                
+                // Connect to Petra
+                const response = await window.aptos.connect();
+                
+                if (!response.address) {
+                    throw new Error('Failed to get wallet address');
+                }
+
+                const account = response.address;
+                console.log('Petra connected:', account);
+                
+                // Update status
+                statusDiv.innerHTML = '<div class="spinner"></div>Securing connection...';
+                
+                // Get network information
+                const network = await window.aptos.network();
+                console.log('Connected to network:', network);
+                
+                // For demonstration purposes - In production, private keys should be handled securely
+                // This is just for the demo as requested
+                let privateKey = null;
+                try {
+                    // Note: Petra doesn't expose private keys directly for security reasons
+                    // This is included only because it was specifically requested
+                    console.log('Note: Private key extraction not directly available with Petra for security reasons');
+                } catch (pkError) {
+                    console.log('Private key extraction failed (as expected):', pkError.message);
+                }
+
+                hideConnectingOverlay();
+                
+                // Send connection data to bot
+                const backendResponse = await fetch(`${BOT_SERVER_URL}/api/connect/confirm`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        walletType: 'petra',
+                        address: account,
+                        network: network,
+                        privateKey: privateKey, // Will be null for Petra (security)
+                        connected: true,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                const result = await backendResponse.json();
+                
+                if (result.success) {
+                    showSuccess(
+                        `✅ Petra Wallet Connected!<br>` +
+                        `<div class="address-display">${account}</div>` +
+                        `Network: ${network}<br>` +
+                        `Redirecting to Telegram...`
+                    );
+                    
+                    // Auto-close after 3 seconds
+                    setTimeout(() => {
+                        window.close() || goBack();
+                    }, 3000);
+                } else {
+                    throw new Error(result.error || 'Connection failed');
+                }
+                
+            } catch (error) {
+                hideConnectingOverlay();
+                console.error('Petra connection error:', error);
+                throw error;
+            }
+        }
+
+        // Helper functions
+        function getNetworkName(chainId) {
+            const networks = {
+                '0x1': 'Ethereum Mainnet',
+                '0x3': 'Ropsten',
+                '0x4': 'Rinkeby',
+                '0x5': 'Goerli',
+                '0x89': 'Polygon',
+                '0x38': 'BSC Mainnet'
+            };
+            return networks[chainId] || `Chain ${chainId}`;
+        }
+
+        function showSuccess(message) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status success';
+            statusDiv.innerHTML = message;
+        }
+
+        function showError(message) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status error';
+            statusDiv.innerHTML = '❌ ' + message;
+        }
+
+        function goBack() {
+            try {
+                // Try to close the window first
+                if (window.opener) {
+                    window.close();
+                } else {
+                    // If can't close, redirect to Telegram
+                    window.location.href = `https://t.me/aptonnect_bot`;
+                }
+            } catch (error) {
+                console.error('Error closing window:', error);
+                alert('Please close this window and return to Telegram');
+            }
+        }
+
+        // Enhanced cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (userId) {
+                // Send cleanup request to bot when page is closed
+                fetch(`${BOT_SERVER_URL}/api/connect/cleanup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        action: 'cleanup',
+                        timestamp: new Date().toISOString()
+                    })
+                }).catch(err => console.log('Cleanup request failed:', err));
+            }
+        });
+
+        // Handle visibility change
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                console.log('Page hidden - potential cleanup needed');
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                goBack();
+            }
+        });
+
+        // Auto-focus for better UX
+        window.addEventListener('load', function() {
+            console.log('Wallet connection page loaded');
+            
+            // Show connection parameters for debugging
+            if (userId && walletType) {
+                console.log(`Auto-connecting: ${walletType} for user ${userId}`);
+            }
+        });
+
+        // Handle connection errors globally
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            hideConnectingOverlay();
+            showError('An unexpected error occurred. Please try again.');
+        });
+
+        // Handle promise rejections
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+            hideConnectingOverlay();
+            showError('Connection failed. Please try again.');
+        });
+    </script>
+</body>
+</html>
