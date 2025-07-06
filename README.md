@@ -5,7 +5,9 @@
 ## Deployed Contract Addresses
 
 ETH --> https://sepolia.etherscan.io/address/0xF011379e3bfE345B426a40198C253791Ba14FEcD
+
 Aptos --> https://explorer.aptoslabs.com/txn/0xd8f267d0f1e10b06ab6ce64b490bd290de77755150ea430fbc3eeba7fdad11e1?network=devnet
+
 
 > 🔐 Encrypted wallet integration | 🧠 AI-powered command parsing | 🔄 Cross-chain token swap | 📈 Real-time portfolio insights | 🚨 Price alerts
 
@@ -84,7 +86,7 @@ Aptos --> https://explorer.aptoslabs.com/txn/0xd8f267d0f1e10b06ab6ce64b490bd290d
 | Encrypted Key Storage         | ❌        | ✅           |
 | Cancel Key Setup Flow         | ❌        | ✅           |
 | Real-Time Portfolio Tracking  | ❌        | ✅           |
-| Cross-Chain Token Swap        | ❌        | ✅           |
+| Cross-Chain Token Swap        | ❌        | Partial           |
 | Price Alerts & Notifications  | ❌        | ✅           |
 | Express REST API              | ❌        | ✅           |
 | TX Receipts with Explorer URL | ❌        | ✅           |
