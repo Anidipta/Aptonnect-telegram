@@ -2,6 +2,11 @@
 
 **Aptonnect** is an advanced Telegram bot that enables seamless crypto portfolio tracking, price alerts, and token swaps across **Ethereum** and **Aptos**—all with natural language commands powered by **Gen AI RAG Agent**.
 
+## Deployed Contract Addresses
+
+ETH --> https://sepolia.etherscan.io/address/0xF011379e3bfE345B426a40198C253791Ba14FEcD
+Aptos --> https://explorer.aptoslabs.com/txn/0xd8f267d0f1e10b06ab6ce64b490bd290de77755150ea430fbc3eeba7fdad11e1?network=devnet
+
 > 🔐 Encrypted wallet integration | 🧠 AI-powered command parsing | 🔄 Cross-chain token swap | 📈 Real-time portfolio insights | 🚨 Price alerts
 
 ---
@@ -61,8 +66,11 @@
 
 ---
 
-## 🧱 Architecture
+## Tech Stack
 
+- React.JS, Javascript, Typescript, HTML
+- Express.JS, Next.JS, Axion, REST API
+- MOVE, Solidity, Aptos-SDK, Connect Wallet, Petra Wallet
 
 ---
 
@@ -108,12 +116,7 @@ APTOS_NODE_URL=https://fullnode.devnet.aptoslabs.com/v1
 npm start
 ```
 
-Or in development mode:
-
-```bash
-nodemon telegram-bot.js
-```
-
+Go to the [bot](https://t.me/aptonnect_bot)
 ---
 
 ## 🛡️ Security Notes
@@ -137,4 +140,7 @@ nodemon telegram-bot.js
 
 **Anidipta Pal**
 Email: [anidiptapal@gmail.com](mailto:anidiptapal@gmail.com)
+
 GitHub: [github.com/Anidipta](https://github.com/Anidipta)
+
+Twitter: [x.com/AnidiptaP](https://x.com/AnidiptaP)
